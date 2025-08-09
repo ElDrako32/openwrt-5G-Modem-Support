@@ -1,16 +1,14 @@
-# 中文 | [English](https://github.com/Siriling/5G-Modem-Support/blob/main/EngLish.md)
+# Поддержка модулей модемов 5G
 
-# 5G模块支持
+# Содержание
 
-# 目录
+[I. Описание](#I Описание)
 
-[一、说明](#一说明)
+[II. Адрес исходного кода ](#II Адрес исходного кода)
 
-[二、源代码地址 ](#二源代码地址)
+# I. Описание
 
-# 一、说明
-
-## 5G驱动
+## Драйверы 5G
 
 - quectel_Gobinet
 - quectel_MHI
@@ -19,16 +17,16 @@
 - fibocom_MHI
 - fibocom_QMI_WWAN
 
-## 拨号工具
+## Инструменты для набора номера
 
 - quectel_cm_5G
 - fibocom-dial
 
-## 图形化界面设置
+## Настройки графического интерфейса
 
-### 拨号
+### Набор номера
 
-- luci-app-modem（新）
+- luci-app-modem (новый)
 
 - luci-app-hypermodem
 - luci-app-usbmodem
@@ -36,28 +34,27 @@
 - luci-app-gobinetmodem
 - luci-app-spdmodem
 
-### 信息插件
+### Информационный плагин
 
 - rooter
 
-### 简化版信息插件
+### Упрощенный информационный плагин
 
 - luci-app-cpe
 
-### AT命令工具
+### Приложения AT-команд
 
 - sendat
 - sms-tool
 
-### 短信工具
+### Приложения для SMS
 
 - luci-app-sms-tool
 
-# 二、源代码地址
+# II. ссылки на источники
 
-- luci-app-hypermodem：https://github.com/momokind/luci-app-hypermodem
+- luci-app-hypermodem: https://github.com/momokind/luci-app-hypermodem
 
-- sendat：https://github.com/ouyangzq/sendat
-- luci-app-cpe：https://github.com/ouyangzq/luci-app-cpe
-- sms-tool：https://github.com/obsy/sms_tool
-
+- sendat: https://github.com/ouyangzq/sendat
+- luci-app-cpe: https://github.com/ouyangzq/luci-app-cpe
+- sms-tool: https://github.com/obsy/sms_tool
