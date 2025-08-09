@@ -234,8 +234,10 @@ static int qmi_wwan_register_subdriver(struct usbnet *dev)
 	atomic_set(&info->pmcount, 0);
 
 	/* register subdriver */
+//	subdriver = usb_cdc_wdm_register(info->control, &dev->status->desc,
+//					 4096, &qmi_wwan_cdc_wdm_manage_power);
 	subdriver = usb_cdc_wdm_register(info->control, &dev->status->desc,
-					 4096, &qmi_wwan_cdc_wdm_manage_power);
+					 4096, WWAN_PORT_QMI, &qmi_wwan_cdc_wdm_manage_power);
 	if (IS_ERR(subdriver)) {
 		dev_err(&info->control->dev, "subdriver registration failed\n");
 		rv = PTR_ERR(subdriver);
@@ -271,7 +273,7 @@ static int qmi_wwan_bind(struct usbnet *dev, struct usb_interface *intf)
 	info->control = intf;
 	info->data = intf;
         /*add by zhangqingyun@meigsmart.com begain
-	/* and a number of CDC descriptors */
+	| and a number of CDC descriptors */
 	while (len > 3) {
 		struct usb_descriptor_header *h = (void *)buf;
 
@@ -371,8 +373,16 @@ next_desc:
 
 	/* make MAC addr easily distinguishable from an IP header */
 	if (possibly_iphdr(dev->net->dev_addr)) {
-		dev->net->dev_addr[0] |= 0x02;	/* set local assignment bit */
-		dev->net->dev_addr[0] &= 0xbf;	/* clear "IP" bit */
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5,18,0)
+	dev->net->dev_addr[0] |= 0x02;	/* set local assignment bit */
+	dev->net->dev_addr[0] &= 0xbf;	/* clear "IP" bit */
+#else
+	u8 addr = dev->net->dev_addr[0];
+
+	addr |= 0x02;	/* set local assignment bit */
+	addr &= 0xbf;	/* clear "IP" bit */
+	dev_addr_mod(dev->net, 0, &addr, 1);
+#endif
 	}
 	dev->net->netdev_ops = &qmi_wwan_netdev_ops;
 

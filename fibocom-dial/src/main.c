@@ -18,6 +18,7 @@
 //2021-03-24 willa.liu@fibocom.com changed begin for support mantis 0071817
 #include "query_pcie_mode.h"
 //2021-03-24 willa.liu@fibocom.com changed begin for support mantis 0071817
+#include "QMIThread.h"
 
 #define MAJOR 2
 #define MINOR 0
@@ -35,6 +36,8 @@
 #define VERSION_STRING() \
     STRINGIFY(MAJOR) "." STRINGIFY(MINOR) "." STRINGIFY(REVISION)
 #define MAX_PATH 256
+
+int get_private_gateway(char *gateway);
 
 //2020-12-23 willa.liu@fibocom.com changed begin for support mantis 0065286
 struct sockaddr_un {
@@ -924,7 +927,7 @@ void *thread_socket_server(void *args)
     if ((socket_server_fd = socket(AF_UNIX,SOCK_STREAM,0))< 0)
     {
         dbg_time("Socket error:%s\a\n", strerror(errno));
-        return ;
+        return ((void *)0);
     }
     dbg_time("socket[%d] successfuly!", socket_server_fd);
     if (!access(fibo_dial_filepath, F_OK))

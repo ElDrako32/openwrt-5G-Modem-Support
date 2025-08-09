@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <pthread.h>
 #include <sys/epoll.h>
-#include <sys/poll.h>
+#include <poll.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <linux/un.h>
@@ -1210,7 +1210,8 @@ static void qmidevice_detect(char **device_name, char **idproduct) {
             }
         }
 
-        strncpy(idproduct,idProduct, sizeof(idProduct));
+//        strncpy(idproduct,idProduct, sizeof(idProduct));
+        strncpy(*idproduct,idProduct, sizeof(idProduct));
             psubDir = opendir(pl->subdir);
             if (pDir == NULL)  {
                 dprintf("Cannot open directory: %s, errno: %d (%s)\n", dir, errno, strerror(errno));
@@ -1250,7 +1251,8 @@ int main(int argc, char *argv[]) {
     int opt;
     char *cdc_wdm = NULL;
     int retry_times = 0;
-    char getidproduct[5] = {0};
+//    char getidproduct[5] = {0};
+    char *getidproduct = malloc(5);
     optind = 1;
 
     signal(SIGINT, sig_action);

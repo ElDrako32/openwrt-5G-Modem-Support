@@ -146,7 +146,8 @@ static long mhi_uci_ioctl(struct file *file,
 #ifndef TCGETS2
 			ret = kernel_termios_to_user_termios((struct termios __user *)arg, &uci_dev->termios);
 #else
-			ret = kernel_termios_to_user_termios_1((struct termios __user *)arg, &uci_dev->termios);
+//			ret = kernel_termios_to_user_termios_1((struct termios __user *)arg, &uci_dev->termios);
+			ret = copy_to_user((struct termios __user *)arg, &uci_dev->termios, sizeof(struct termios));
 #endif
 		break;
 
@@ -155,7 +156,8 @@ static long mhi_uci_ioctl(struct file *file,
 #ifndef TCGETS2
 			ret = user_termios_to_kernel_termios(&uci_dev->termios, (struct termios __user *)arg);
 #else
-			ret = user_termios_to_kernel_termios_1(&uci_dev->termios, (struct termios __user *)arg);
+//			ret = user_termios_to_kernel_termios_1(&uci_dev->termios, (struct termios __user *)arg);
+			ret = copy_from_user(&uci_dev->termios, (struct termios __user *)arg, sizeof(struct termios));
 #endif
 		break;
 
@@ -313,7 +315,8 @@ static ssize_t mhi_uci_write(struct file *file,
 
 		spin_unlock_bh(&uci_chan->lock);
 
- 		if (mhi_get_no_free_descriptors(mhi_dev, DMA_TO_DEVICE) == 0 && (file->f_mode & FMODE_NDELAY))
+// 		if (mhi_get_no_free_descriptors(mhi_dev, DMA_TO_DEVICE) == 0 && (file->f_mode & FMODE_NDELAY))
+ 		if (mhi_get_no_free_descriptors(mhi_dev, DMA_TO_DEVICE) == 0 && (file->f_flags & O_NONBLOCK))
 			break;
 
 		/* wait for free descriptors */
@@ -400,7 +403,8 @@ static ssize_t mhi_uci_read(struct file *file,
 
 		spin_unlock_bh(&uci_chan->lock);
 		
-		if (file->f_mode & FMODE_NDELAY)
+//		if (file->f_mode & FMODE_NDELAY)
+		if (file->f_flags & O_NONBLOCK)
 			return -EAGAIN;
 		
 		ret = wait_event_interruptible(uci_chan->wq,
@@ -759,7 +763,8 @@ int mhi_device_uci_init(void)
 		return ret;
 
 	mhi_uci_drv.major = ret;
-	mhi_uci_drv.class = class_create(THIS_MODULE, MHI_UCI_DRIVER_NAME);
+//	mhi_uci_drv.class = class_create(THIS_MODULE, MHI_UCI_DRIVER_NAME);
+	mhi_uci_drv.class = class_create(MHI_UCI_DRIVER_NAME);
 	if (IS_ERR(mhi_uci_drv.class)) {
 		unregister_chrdev(mhi_uci_drv.major, MHI_UCI_DRIVER_NAME);
 		return -ENODEV;

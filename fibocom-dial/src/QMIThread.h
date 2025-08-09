@@ -28,7 +28,7 @@
 #include <string.h>
 #include <sys/epoll.h>
 #include <sys/ioctl.h>
-#include <sys/poll.h>
+#include <poll.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -195,6 +195,10 @@ typedef enum {
 #define RIL_INDICATE_DEVICE_DISCONNECTED 0x1003
 #define RIL_UNSOL_RESPONSE_VOICE_NETWORK_STATE_CHANGED 0x1004
 #define RIL_UNSOL_DATA_CALL_LIST_CHANGED 0x1005
+
+int requestGetSIMCardNumber(PROFILE_T *profile);
+int requestSimBindSubscription_NAS_WMS(void);
+int requestSimBindSubscription_WDS_DMS_QOS(void);
 
 extern int pthread_cond_timeout_np(pthread_cond_t *cond, pthread_mutex_t *mutex,
 				   unsigned msecs);

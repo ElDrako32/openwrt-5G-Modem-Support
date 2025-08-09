@@ -14,12 +14,12 @@ PKG_RELEASE:=1
 include $(INCLUDE_DIR)/kernel.mk
 include $(INCLUDE_DIR)/package.mk
 
-define KernelPackage/pcie_mhi_fb
+define KernelPackage/fibo_mhi
   SUBMENU:=WWAN Support
   TITLE:=Kernel pcie driver for MHI device
   DEPENDS:=+pciids +pciutils +fibocom-dial
-  FILES:=$(PKG_BUILD_DIR)/pcie_mhi_fb.ko
-  AUTOLOAD:=$(call AutoLoad,90,pcie_mhi_fb)
+  FILES:=$(PKG_BUILD_DIR)/fibo_mhi.ko
+  AUTOLOAD:=$(call AutoLoad,90,fibo_mhi)
 endef
 
 define KernelPackage/pcie_mhi_fb/description
@@ -44,4 +44,4 @@ define Build/Compile
 		modules
 endef
 
-$(eval $(call KernelPackage,pcie_mhi_fb))
+$(eval $(call KernelPackage,fibo_mhi))

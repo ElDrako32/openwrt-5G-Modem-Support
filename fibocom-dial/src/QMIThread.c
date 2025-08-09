@@ -5,6 +5,7 @@ extern char *strndup(const char *__string, size_t __n);
 //2021-03-24 willa.liu@fibocom.com changed begin for support mantis 0071817
 //extern int *speed_arr;
 //extern int *name_arr;
+extern int get_private_gateway(char *gateway);
 
 PQCQMIMSG pResponse;
 PQMUX_MSG pMUXMsg;

@@ -10,7 +10,7 @@
 #include <net/if.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <sys/fcntl.h>
+#include <fcntl.h>
 #include <sys/ioctl.h>
 
 #include <linux/if_link.h>

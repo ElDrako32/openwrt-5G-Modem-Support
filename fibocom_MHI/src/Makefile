@@ -1,7 +1,7 @@
 ccflags-y += -g -Wno-incompatible-pointer-types -Wno-unused-variable
 #ccflags-y += -DCONFIG_MHI_NETDEV_MBIM
 #obj-${CONFIG_PCIE_MHI} := fibo_mhi.o
-obj-m := fibo_mhi.o
+obj-m += fibo_mhi.o
 fibo_mhi-objs := core/mhi_init.o core/mhi_main.o core/mhi_pm.o core/mhi_boot.o core/mhi_dtr.o devices/mhi_netdev.o devices/mhi_uci.o controllers/mhi_qcom.o
 
 PWD := $(shell pwd)
@@ -27,3 +27,7 @@ endif
 
 clean:
 	$(MAKE) ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} -C $(KDIR) M=$(PWD) clean
+
+install: fibo_mhi
+	sudo cp fibo_mhi.ko /lib/modules/${shell uname -r}/kernel/drivers/pci/
+	sudo depmod

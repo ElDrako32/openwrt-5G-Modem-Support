@@ -903,7 +903,8 @@ static int of_parse_ch_cfg(struct mhi_controller *mhi_cntrl,
 			mhi_chan->er_index = IPA_IN_EVENT_RING;
 		else
 			mhi_chan->er_index = PRIMARY_EVENT_RING;
-		mhi_chan->dir = (chan_cfg[i].chan_id&1) ? INBOUND_CHAN : OUTBOUND_CHAN;
+//		mhi_chan->dir = (chan_cfg[i].chan_id&1) ? INBOUND_CHAN : OUTBOUND_CHAN;
+		mhi_chan->dir = (chan_cfg[i].chan_id&1) ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
 
 		mhi_chan->db_cfg.pollcfg = pollcfg;
 		mhi_chan->ee = MHI_EE_AMSS;
@@ -1189,7 +1190,8 @@ static int mhi_match(struct device *dev, struct device_driver *drv)
 	struct mhi_driver *mhi_drv = to_mhi_driver(drv);
 	const struct mhi_device_id *id;
 
-	for (id = mhi_drv->id_table; id->chan != NULL && id->chan[0] != '\0'; id++) {
+//	for (id = mhi_drv->id_table; id->chan != NULL && id->chan[0] != '\0'; id++) {
+	for (id = mhi_drv->id_table; strlen(id->chan) > 0; id++) {
 		if (!strcmp(mhi_dev->chan_name, id->chan)) {
 			mhi_dev->id = id;
 			return 1;
