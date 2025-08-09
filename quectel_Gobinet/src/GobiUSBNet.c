@@ -305,8 +305,11 @@ static int bridge_arp_reply(struct net_device *net, struct sk_buff *skb, uint br
             __skb_pull(reply, skb_network_offset(reply));
             reply->ip_summed = CHECKSUM_UNNECESSARY;
             reply->pkt_type = PACKET_HOST;
-
+#if (LINUX_VERSION_CODE > KERNEL_VERSION( 6,1,0))
+            netif_rx(reply);
+#else
             netif_rx_ni(reply);
+#endif  
         }
         return 1;
     }
@@ -944,7 +947,8 @@ static int qmap_register_device(sGobiUSBNet * pDev, u8 offset_id)
 #else
     qmap_net->netdev_ops = &qmap_netdev_ops;
 #endif
-    memcpy (qmap_net->dev_addr, real_dev->dev_addr, ETH_ALEN);
+//    memcpy (qmap_net->dev_addr, real_dev->dev_addr, ETH_ALEN);
+    memcpy ((void *)qmap_net->dev_addr, real_dev->dev_addr, ETH_ALEN);
 
 #ifdef QUECTEL_BRIDGE_MODE
 	priv->m_bridge_mode = !!(pDev->m_bridge_mode & BIT(offset_id));
@@ -1537,12 +1541,7 @@ static int GobiNetDriverBind(
 
 #if 1 //def DATA_MODE_RP
     /* make MAC addr easily distinguishable from an IP header */
-    if ((pDev->net->dev_addr[0] & 0xd0) == 0x40) {
-        /*clear this bit wil make usbnet apdater named as usbX(instead if ethX)*/
-        pDev->net->dev_addr[0] |= 0x02;	/* set local assignment bit */
-        pDev->net->dev_addr[0] &= 0xbf;	/* clear "IP" bit */
-    }
-    memcpy (pDev->net->dev_addr, node_id, sizeof node_id);
+    memcpy ((void *)pDev->net->dev_addr, node_id, sizeof node_id);
     pDev->net->flags &= ~(IFF_BROADCAST | IFF_MULTICAST);
     pDev->net->features |= (NETIF_F_VLAN_CHALLENGED);
 #endif
@@ -2957,7 +2956,8 @@ static int GobiUSBNetProbe(
    memset( &(pGobiDev->mMEID), '0', 14 );
    
    DBG( "Mac Address:\n" );
-   PrintHex( &pGobiDev->mpNetDev->net->dev_addr[0], 6 );
+//   PrintHex( &pGobiDev->mpNetDev->net->dev_addr[0], 6 );
+   PrintHex( (void *)&pGobiDev->mpNetDev->net->dev_addr[0], 6 );
 
    pGobiDev->mbQMIValid = false;
    memset( &pGobiDev->mQMIDev, 0, sizeof( sQMIDev ) );
@@ -3149,7 +3149,11 @@ RETURN VALUE:
 ===========================================================================*/
 static int __init GobiUSBNetModInit( void )
 {
+#if (LINUX_VERSION_CODE > KERNEL_VERSION( 6,6,0 ))  
+   gpClass = class_create("GobiQMI" );
+#else
    gpClass = class_create( THIS_MODULE, "GobiQMI" );
+#endif
    if (IS_ERR( gpClass ) == true)
    {
       DBG( "error at class_create %ld\n", PTR_ERR( gpClass ) );

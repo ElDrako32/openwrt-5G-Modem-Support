@@ -908,7 +908,8 @@ int sbuf_write(u8 dst, u8 channel, u32 bufid,
 	left = len;
 
 	if (timeout) {
-	    mutex_lock_interruptible(&ring->txlock);
+	    if (mutex_lock_interruptible(&ring->txlock) != 0) 
+		return -ETIME;
 	} else {
 		if (!mutex_trylock(&ring->txlock)) {
 			pr_debug("sbuf_read busy, dst=%d, channel=%d, bufid=%d\n",
@@ -1134,7 +1135,9 @@ int sbuf_read(u8 dst, u8 channel, u32 bufid,
 	left = len;
 
 	if (timeout) {
-	    mutex_lock_interruptible(&ring->rxlock);
+	    //mutex_lock_interruptible(&ring->rxlock);
+	    if (mutex_lock_interruptible(&ring->rxlock) != 0) 
+		return -ETIME;
 	} else {
 		if (!mutex_trylock(&ring->rxlock)) {
 			pr_debug("%s: busy!,dst=%d, channel=%d, bufid=%d\n",
@@ -1482,10 +1485,12 @@ void sbuf_get_status(u8 dst, char *status_info, int size)
 				snprintf(
 					 status_info + len,
 					 size - len,
-					 "%s %d: %s, state=0x%lx, pid=%d.\n",
+//					 "%s %d: %s, state=0x%lx, pid=%d.\n",
+					 "%s %d: %s, state=0x%x, pid=%d.\n",
 					 phead,
 					 cnt, task->comm,
-					 task->state, task->pid);
+//					 task->state, task->pid);
+					 task->__state, task->pid);
 				cnt++;
 				len = strlen(status_info);
 			}
@@ -1567,9 +1572,11 @@ static void sbuf_debug_task_show(struct seq_file *m,
 				   n,
 				   buf,
 				   cnt);
-			seq_printf(m, ": %s, state = 0x%lx, pid = %d\n",
+//			seq_printf(m, ": %s, state = 0x%lx, pid = %d\n",
+			seq_printf(m, ": %s, state = 0x%x, pid = %d\n",
 				   task->comm,
-				   task->state,
+//				   task->state,
+				   task->__state,
 				   task->pid);
 			cnt++;
 		}

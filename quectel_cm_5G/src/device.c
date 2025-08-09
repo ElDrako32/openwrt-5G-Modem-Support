@@ -435,7 +435,8 @@ int mhidevice_detect(char *qmichannel, char *usbnet_adapter, PROFILE_T *profile)
                 continue;
             }
 
-            char *d_name[32];
+            //char *d_name[32];
+            char *d_name = malloc(32);
             strcpy(d_name, ent->d_name);
             replaceStr(d_name, "_IP_HW0", "");
             dbg_time("while -> pcie_name = : %s ", d_name);

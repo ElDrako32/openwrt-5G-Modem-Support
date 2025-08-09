@@ -36,6 +36,7 @@
 #include <linux/mutex.h>
 #include <linux/version.h>
 #include <linux/debugfs.h>
+#include <linux/etherdevice.h>  // kernel 6.6+
 
 #include "sipa_eth.h"
 #include "../include/sipa.h"
@@ -744,13 +745,17 @@ static int sipa_eth_probe(struct platform_device *pdev)
 	netdev->irq = 0;
 	netdev->dma = 0;
 	netdev->features &= ~(NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM | NETIF_F_HW_CSUM);
-	random_ether_addr(netdev->dev_addr);
+//	random_ether_addr(netdev->dev_addr);
+	eth_random_addr(netdev->dev_addr);
         netdev->sysfs_groups[0] = &sipa_eth_attribute_group;
 
+//	netif_napi_add(netdev,
+//		       &sipa_eth->napi,
+//		       sipa_eth_rx_poll_handler,
+//		       SIPA_ETH_NAPI_WEIGHT);
 	netif_napi_add(netdev,
 		       &sipa_eth->napi,
-		       sipa_eth_rx_poll_handler,
-		       SIPA_ETH_NAPI_WEIGHT);
+		       sipa_eth_rx_poll_handler);
 
 	/* Register new Ethernet interface */
 	ret = register_netdev(netdev);

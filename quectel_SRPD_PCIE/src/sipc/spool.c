@@ -501,7 +501,8 @@ int spool_init(void)
 {
 	int ret;
 
-	spool_class = class_create(THIS_MODULE, "spool");
+//	spool_class = class_create(THIS_MODULE, "spool");
+	spool_class = class_create("spool");
 	if (IS_ERR(spool_class))
 		return PTR_ERR(spool_class);
 #ifndef SPRD_PCIE_USE_DTS

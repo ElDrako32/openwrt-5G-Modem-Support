@@ -912,7 +912,9 @@ int smsg_recv(u8 dst, struct smsg *msg, int timeout)
 			goto recv_failed;
 		}
 	} else if (timeout < 0) {
-	    mutex_lock_interruptible(&ch->rxlock);
+//	    mutex_lock_interruptible(&ch->rxlock);
+		int ret = mutex_lock_interruptible(&ch->rxlock);
+		if (ret != 0) ret = 0; // Заглушка обработки ошибки
 		/* wait forever */
 		rval = wait_event_interruptible(
 				ch->rxwait,
@@ -935,7 +937,9 @@ int smsg_recv(u8 dst, struct smsg *msg, int timeout)
 			goto recv_failed;
 		}
 	} else {
-	    mutex_lock_interruptible(&ch->rxlock);
+//		mutex_lock_interruptible(&ch->rxlock);
+		int ret = mutex_lock_interruptible(&ch->rxlock);
+		if (ret != 0) ret = 0; // Заглушка обработки ошибки
 		/* wait timeout */
 		rval = wait_event_interruptible_timeout(
 			ch->rxwait,

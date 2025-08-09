@@ -439,7 +439,8 @@ int spipe_init(void)
 {
 	int ret;
 
-	spipe_class = class_create(THIS_MODULE, "spipe");
+//	spipe_class = class_create(THIS_MODULE, "spipe");
+	spipe_class = class_create("spipe");
 	if (IS_ERR(spipe_class))
 		return PTR_ERR(spipe_class);
 #ifndef SPRD_PCIE_USE_DTS
@@ -468,7 +469,7 @@ void spipe_exit(void)
 
 void spipe_device_down(void) 
 {
-	int retval = -ENOMEM;
+//	int retval = -ENOMEM;
 	int i;
 
     for(i = 0; i < MAX_SPIPE_CHN_NUM; i++) {

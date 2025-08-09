@@ -1010,7 +1010,7 @@ void sblock_down(u8 dst, u8 channel)
 {
 	struct sblock_mgr *sblock;
 	u8 ch_index;
-    int i;
+//    int i;
 	ch_index = sipc_channel2index(channel);
 	if (ch_index == INVALID_CHANEL_INDEX) {
 		pr_err("%s:channel %d invalid!\n", __func__, channel);
